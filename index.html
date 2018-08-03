@@ -92,11 +92,11 @@
 			    });
 		}
 
-	     }, 2000);
+	     }, 1500);
 	    
 	};
 	conn.onclose = function(x){
-		
+
 	}
 	conn.onmessage = function(e){
 		e = JSON.parse(e.data);
@@ -105,13 +105,18 @@
 		yourtype = e.yourtype;
 		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
 		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
+		mytime = true;
 	}
 	} 
 	$('td').click(function(){
-		id = $(this).data('id');
+		if(mytime==true){
+			id = $(this).data('id');
 		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
 		if(type=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
 		conn.send(JSON.stringify({yourtype:type,areaId:id,id_match:id_match}));
+		mytime = false;
+		}
+		
 	});
         </script>
     </body>
