@@ -7,7 +7,7 @@
             </title>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
             </script>
-        
+        </meta>
     </head>
     <body>
         <center>
@@ -17,7 +17,6 @@
             <h3 id="myinfo" style="font-family: monospace;">
             </h3>
             <h3 id="status" style="font-family: monospace;">
-            </h3>
             </h3>
             <h3 id="mytime" style="font-family: monospace;">
             </h3>
@@ -42,7 +41,7 @@
 	}
         </style>
         <script type="text/javascript">
-        	var id_match;
+            var id_match;
         	var mytime;
         	var status = false;
             var type;
@@ -70,7 +69,7 @@
 			    	url: 'http://vucms.systems/caroweb/whoplay.php?id_match='+id_match,
 			    	success: function(data){
 			    		data = JSON.parse(data);
-			    		 type = data.mytype;if(type=='x') mytime =true; else mytime =false;
+			    		 type = data.mytype;if(type=='x' && data.status=='success'){$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');mytime =true;}  else mytime =false;
 			    		id_match = data.id_match;
 
 			    		$('#myinfo').html('Bạn bên: '+type);
@@ -85,7 +84,7 @@
 			    	url: 'http://vucms.systems/caroweb/whoplay.php',
 			    	success: function(data){
 			    		data = JSON.parse(data);
-			    		 type = data.mytype;if(type=='x') mytime =true; else mytime =false;
+			    		 type = data.mytype;if(type=='x' && data.status=='success'){$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');mytime =true;}  else mytime =false;
 			    		id_match = data.id_match;
 			    		$('#myinfo').html('Bạn bên: '+type);
 			    		if(data.status =='pending'){ $('#status').html('Trạng thái: Đang tìm đứa dở hơi nào đó chơi với bạn...');}
@@ -107,22 +106,74 @@
 		if(id_match==e.id_match && e.yourtype != type){
 		id = e.areaId;
 		yourtype = e.yourtype;
-		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').append('X');$('td[data-id="'+id+'"]').data('x-id',id);}
-		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').append('O');$('td[data-id="'+id+'"]').data('o-id',id);}
+		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').html('X');
+		$('td[data-id="'+id+'"]').attr('data-xid','x');}
+		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').html('O');
+		$('td[data-id="'+id+'"]').attr('data-oid','o');}
 		$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');
 		mytime = true;
 
 	}
 	} 
 	$('td').click(function(){
+		if($('td[data-id="'+$(this).data('id')+'"]').html()=='X' || $('td[data-id="'+$(this).data('id')+'"]').html()=='O' ) return false;
 		if(mytime==true){
 
 			id = $(this).data('id');
-		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').append('X');$('td[data-id="'+id+'"]').data('x-id',id);} 
-		if(type=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').append('O');$('td[data-id="'+id+'"]').data('o-id',id);}
+		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').html('X');
+		$('td[data-id="'+id+'"]').attr('data-xid','x');} 
+		if(type=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').html('O');
+		$('td[data-id="'+id+'"]').attr('data-oid','o');}
 		$('#mytime').html('<p style="color:black">Lượt chơi: Đến lượt người kia !</p>');
 		conn.send(JSON.stringify({yourtype:type,areaId:id,id_match:id_match}));
 		mytime = false;
+		var id =[];
+		$('td[data-'+type+'id="'+type+'"]').each(function(){
+			id.push($(this).data('id'));
+
+		});
+		var successline =  [];
+		for(i=0;i<id.length;i++){
+					dataid = id[i];
+					successline.push(dataid);
+					for(z=1;z<5;z++){
+						if($.inArray(dataid+z,id) >=0){
+							successline.push(dataid+z);
+						}
+						if(z==4 && successline.length < 5) successline =[]; 
+					}
+					if(successline.length < 5) {successline =[];
+					for(z=col;z<col*5;z+=col){
+						if($.inArray(dataid+z,id) >=0){
+							console.log(dataid+z);
+							successline.push(dataid+z);
+						}
+						if(z==)
+					}
+				}
+					if(successline.length < 5){ successline =[];
+					for(z=rightTo;z<rightTo*5;z+=rightTo){
+						if($.inArray(dataid+z,id) >=0){
+							successline.push(dataid+z);
+						}
+						if(z==)
+					}}
+					if(successline.length < 5){successline =[];
+					for(z=leftTo;z<leftTo*5;z+=leftTo){
+						if($.inArray(dataid+z,id) >=0){
+							successline.push(dataid+z);
+						}
+						if(z==)
+					}} 
+					if(successline.length < 5) successline =[];
+					
+					
+
+
+			
+
+			}
+			console.log(successline);
 		}
 		
 	});
