@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+            <title>
+                Caro
+            </title>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+            </script>
+        
+    </head>
+    <body>
+        <center>
+            <h1 style="color:blue;font-family: monospace;">
+                Caro
+            </h1>
+            <h3 id="myinfo" style="font-family: monospace;">
+            </h3>
+            <h3 id="status" style="font-family: monospace;">
+            </h3>
+        </center>
+        <table id="caroTable" style="margin: 50px auto;">
+        </table>
+        <style type="text/css">
+            td{
+		height: 35px;
+		width: 35px;
+		display: inline-block;
+		border: 0.2px solid green;
+		margin: 0;
+		margin-right: 2.5px; 
+		text-align: center;
+		line-height: 35px;
+		font-family: monospace;
+		font-size: 25px;
+	}
+	tr{
+		margin: 0;
+	}
+        </style>
+        <script type="text/javascript">
+        	var id_match;
+        	var mytime;
+        	var status = false;
+            var type;
+      var col = 20;
+	var row = 20;
+	rightTo = col-1;
+	leftTo = col+1;
+	for(i=1;i <=row;i++){
+		$('#caroTable').append('<tr data-rowId='+i+'><tr>');
+		var appendData ='';
+		for(z=1;z<=col;z++){
+			appendData +='<td data-id="'+((i-1)*col+z)+'"></td>';
+		}
+		$('tr[data-rowId="'+i+'"]').append(appendData);
+	}
+
+		var conn = new WebSocket("wss://node2.wsninja.io");
+	conn.onopen = function(e) {
+	    console.log("Kết nối server thành công!");
+	    conn.send(JSON.stringify({ guid: "3d754fb2-2c80-4a57-b0d5-ee044524cec5" }));
+	    var checkstt = setInterval(function(){ 
+		if(id_match !=null){
+			$.ajax({
+			    	method: 'get',
+			    	url: 'http://vucms.systems/caroweb/whoplay.php?id_match='+id_match,
+			    	success: function(data){
+			    		data = JSON.parse(data);
+			    		 type = data.mytype;
+			    		id_match = data.id_match;
+
+			    		$('#myinfo').html('Bạn bên: '+type);
+			    		if(data.status =='pending'){ $('#status').html('Trạng thái: Đang tìm đứa dở hơi nào đó chơi với bạn...');}
+			    		else {$('#status').html('Trạng thái: <p style="color:green">Đã tìm thấy đứa dở hơi đánh với bạn !</p>');clearInterval(checkstt);}
+
+			    	}
+			    });
+		}else{
+			$.ajax({
+			    	method: 'get',
+			    	url: 'http://vucms.systems/caroweb/whoplay.php',
+			    	success: function(data){
+			    		data = JSON.parse(data);
+			    		 type = data.mytype;
+			    		id_match = data.id_match;
+			    		$('#myinfo').html('Bạn bên: '+type);
+			    		if(data.status =='pending'){ $('#status').html('Trạng thái: Đang tìm đứa dở hơi nào đó chơi với bạn...');}
+			    		else {$('#status').html('Trạng thái: <p style="color:green">Đã tìm thấy đứa dở hơi đánh với bạn !</p>');clearInterval(checkstt);}
+
+			    	}
+			    });
+		}
+
+	     }, 2000);
+	    
+	};
+	conn.onclose = function(x){
+		
+	}
+	conn.onmessage = function(e){
+		e = JSON.parse(e.data);
+		if(id_match==e.id_match){
+		id = e.areaId;
+		yourtype = e.yourtype;
+		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
+		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
+	}
+	} 
+	$('td').click(function(){
+		id = $(this).data('id');
+		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
+		if(type=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
+		conn.send(JSON.stringify({yourtype:type,areaId:id,id_match:id_match}));
+	});
+        </script>
+    </body>
+</html>
