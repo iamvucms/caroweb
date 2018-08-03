@@ -18,6 +18,9 @@
             </h3>
             <h3 id="status" style="font-family: monospace;">
             </h3>
+            </h3>
+            <h3 id="mytime" style="font-family: monospace;">
+            </h3>
         </center>
         <table id="caroTable" style="margin: 50px auto;">
         </table>
@@ -67,7 +70,7 @@
 			    	url: 'http://vucms.systems/caroweb/whoplay.php?id_match='+id_match,
 			    	success: function(data){
 			    		data = JSON.parse(data);
-			    		 type = data.mytype;
+			    		 type = data.mytype;if(type=='x') mytime =true; else mytime =false;
 			    		id_match = data.id_match;
 
 			    		$('#myinfo').html('Bạn bên: '+type);
@@ -82,7 +85,7 @@
 			    	url: 'http://vucms.systems/caroweb/whoplay.php',
 			    	success: function(data){
 			    		data = JSON.parse(data);
-			    		 type = data.mytype;
+			    		 type = data.mytype;if(type=='x') mytime =true; else mytime =false;
 			    		id_match = data.id_match;
 			    		$('#myinfo').html('Bạn bên: '+type);
 			    		if(data.status =='pending'){ $('#status').html('Trạng thái: Đang tìm đứa dở hơi nào đó chơi với bạn...');}
@@ -93,6 +96,7 @@
 		}
 
 	     }, 1500);
+
 	    
 	};
 	conn.onclose = function(x){
@@ -100,19 +104,23 @@
 	}
 	conn.onmessage = function(e){
 		e = JSON.parse(e.data);
-		if(id_match==e.id_match){
+		if(id_match==e.id_match && e.yourtype != type){
 		id = e.areaId;
 		yourtype = e.yourtype;
-		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
-		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
+		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').append('X');$('td[data-id="'+id+'"]').data('x-id',id);}
+		if(yourtype=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').append('O');$('td[data-id="'+id+'"]').data('o-id',id);}
+		$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');
 		mytime = true;
+
 	}
 	} 
 	$('td').click(function(){
 		if(mytime==true){
+
 			id = $(this).data('id');
-		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ) $('td[data-id="'+id+'"]').append('X');
-		if(type=='o' && $('td[data-id="'+id+'"]').html()=='') $('td[data-id="'+id+'"]').append('O');
+		if(type=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').append('X');$('td[data-id="'+id+'"]').data('x-id',id);} 
+		if(type=='o' && $('td[data-id="'+id+'"]').html()==''){$('td[data-id="'+id+'"]').append('O');$('td[data-id="'+id+'"]').data('o-id',id);}
+		$('#mytime').html('<p style="color:black">Lượt chơi: Đến lượt người kia !</p>');
 		conn.send(JSON.stringify({yourtype:type,areaId:id,id_match:id_match}));
 		mytime = false;
 		}
