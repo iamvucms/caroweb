@@ -133,15 +133,22 @@
 
 		});
 		var successline =  [];
+
 		for(i=0;i<id.length;i++){
 					dataid = id[i];
-					successline.push(dataid);
-					for(z=1;z<5;z++){
+					//console.log(dataid);
+					
+					for(var z=0;z<=4;z++){
 						if($.inArray(dataid+z,id) >=0){
+							//console.log(dataid+z);
 							successline.push(dataid+z);
 						}
-						if(z==4 && successline.length < 5) successline =[]; 
+						if(z==4 && successline.length < 5){successline.length =0;} 
+						else if(z==4 && successline.length == 5) {check2(successline); break;}
 					}
+
+					//console.log(successline);
+
 				// 	if(successline.length < 5) {successline =[];
 				// 	for(z=col;z<col*5;z+=col){
 				// 		if($.inArray(dataid+z,id) >=0){
@@ -173,10 +180,31 @@
 			
 
 			}
-			console.log(successline);
+			;
 		}
 		
 	});
+	function check2(arr) {
+		var success = true;
+		for(a=0;a<arr.length;a++){
+			dataCheck = arr[a];
+			if(dataCheck ==1 || dataCheck ==col*row){
+				
+				break;
+			}
+			if(col - dataCheck % col >= 0 && col - dataCheck % col<=15){ //error logic
+				success = false;
+				
+
+			}
+				if(success==true){
+					$('td[data-id="'+arr[a]+'"]').css("color","green");
+				}
+			
+		}
+		
+	}
         </script>
+	
     </body>
 </html>
