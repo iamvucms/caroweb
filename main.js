@@ -70,7 +70,7 @@ var id_match;
 		$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');
 		mytime = true;
 
-		}else if(e.action =='win'  && e.idlist){
+		}else if(e.action =='win'  && e.idlist  && id_match == e.id_match){
 			console.log('Bạn đã thua');
 			dataWin = e.idlist;
 			var colorline =1; 
@@ -82,8 +82,13 @@ var id_match;
 				}
 			},400);
 			mytime = false;
-			$('#mytime').html('<p style="color:red">Bạn đã thua !</p>');
+			$('#info_match').html('<p style="color:red">Bạn đã thua !</p><button onclick="reset_game();" style="border:none; border-radius:5px;height:30px;width:70;color:white;background:#5435b0">Game Mới</button>');
 			
+		}
+		else if(e.action =="new_game" && id_match == e.id_match){
+			$('#info_match').html('<p style="color:green">Yêu cầu tạo game mới</p><button onclick="acpt_reset_game();" style="border:none; border-radius:5px;height:30px;width:70;color:white;background:#5435b0">Chấp nhận</button>');
+		}else if(e.action=="accept" && id_match == e.id_match){
+			acpt_reset_game_withoutsend();
 		}
 	} 
 	$('td').click(function(){
@@ -116,7 +121,7 @@ var id_match;
 						}
 						if(z==4 && successline.length < 5){successline.length =0;} 
 						else if(z==4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
-							win(successline,type);
+							win(successline,type);successline.length =0;
 						 break;}else if(z==4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
 							successline.length = 0;
 							continue;
@@ -131,7 +136,7 @@ var id_match;
 						if(z==col*4 && successline.length < 5){successline.length =0;} 
 						else if(z==col*4 && successline.length == 5) {
 							success(successline);
-							win(successline,type);
+							win(successline,type);successline.length =0;
 						 	break;
 						}
 					}
@@ -142,7 +147,7 @@ var id_match;
 						}
 						if(z==rightTo*4 && successline.length < 5){successline.length =0;} 
 						else if(z==rightTo*4 && successline.length == 5 && (successline[0] % col >4)) {success(successline);
-							win(successline,type);
+							win(successline,type);successline.length =0;
 						 break;}else if(z==rightTo*4 && successline.length == 5 && (successline[0] % col <=4)){
 							successline.length = 0;
 							continue;
@@ -155,7 +160,7 @@ var id_match;
 						}
 						if(z==leftTo*4 && successline.length < 5){successline.length =0;} 
 						else if(z==leftTo*4 && successline.length == 5 && (col- successline[0] % col >3 )) {success(successline);
-							win(successline,type);
+							win(successline,type);successline.length =0;
 						 break;}else if(z==leftTo*4 && successline.length == 5 && (col- successline[0] % col <=3 )){
 							successline.length = 0;
 							continue;
@@ -210,7 +215,7 @@ var id_match;
 			// }
 			var colorline =1; 
 			setInterval(function(){
-				if(colorline % 2 ==1) colornum_ = 'green'; else colornum_ = 'black';
+				if(colorline % 2 ==1) colornum_ = '#4285f4'; else colornum_ = 'black';
 				for(a=0;a<5;a++){
 
 					$('td[data-id="'+arr[a]+'"]').css("color",colornum_);
@@ -218,10 +223,32 @@ var id_match;
 				}
 				colorline++;
 			},400);
-			$('#mytime').html('<p style="color:green;">Bạn đã chiến thắng !</p>');
+			$('#info_match').html('<p style="color:#4285f4;">Bạn đã chiến thắng !</p><button onclick="reset_game();" style="border:none; border-radius:5px;height:30px;width:70;color:white;background:#5435b0">Game Mới</button>');
 			
 		
 	}
 	function win(idlist,type){
 		conn.send(JSON.stringify({action:"win",type:type,idlist:idlist,id_match:id_match}));
 	} 
+	function reset_game(){
+		conn.send(JSON.stringify({id_match:id_match,action:"new_game"}));
+	}
+	function acpt_reset_game(){
+		conn.send(JSON.stringify({action:"accept",id_match:id_match}));
+		$('#info_match').html('');
+		$('td').each(function(){
+			$(this).html('');
+			$(this).removeAttr('data-oid');
+			$(this).removeAttr('data-xid');
+		});
+		if(type=='x') {mytime = true;$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');} else {mytime = false;	$('#mytime').html('<p style="color:black">Lượt chơi: Đến lượt người kia !</p>');}
+	}
+	function acpt_reset_game_withoutsend(){
+		$('#info_match').html('');
+		$('td').each(function(){
+			$(this).html('');
+			$(this).removeAttr('data-oid');
+			$(this).removeAttr('data-xid');
+		});
+		if(type=='x') {mytime = true;$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');} else {mytime = false;	$('#mytime').html('<p style="color:black">Lượt chơi: Đến lượt người kia !</p>');}
+	}
