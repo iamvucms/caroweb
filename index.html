@@ -7,7 +7,6 @@
             </title>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
             </script>
-        </meta>
     </head>
     <body>
         <center>
@@ -144,7 +143,7 @@
 							successline.push(dataid+z);
 						}
 						if(z==4 && successline.length < 5){successline.length =0;} 
-						else if(z==4 && successline.length == 5) {check2(successline); break;}
+						else if(z==4 && successline.length == 5) {check2(successline);}
 					}
 
 					//console.log(successline);
@@ -185,23 +184,30 @@
 		
 	});
 	function check2(arr) {
-		var success = true;
-		for(a=0;a<arr.length;a++){
-			dataCheck = arr[a];
-			if(dataCheck ==1 || dataCheck ==col*row){
+		
+		var success ;
+		
+			
+			if( arr[0] ==1 ||  arr[4] ==col*row){
 				
-				break;
-			}
-			if(col - dataCheck % col >= 0 && col - dataCheck % col<=15){ //error logic
+				success = true;
+			}else if(arr[4] % col >= 5){
+				success =true;
+				console.log(arr);
+			}else{
 				success = false;
+			} 
+			// if(col - dataCheck % col >= 0 && col - dataCheck % col<=15){ //error logic
+			// 	success = false;
 				
 
-			}
+			// }
+			for(a=0;a<arr.length;a++){
 				if(success==true){
 					$('td[data-id="'+arr[a]+'"]').css("color","green");
 				}
 			
-		}
+			}
 		
 	}
         </script>
