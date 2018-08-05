@@ -183,9 +183,9 @@
 							successline.push(dataid+z);
 						}
 						if(z==rightTo*4 && successline.length < 5){successline.length =0;} 
-						else if(z==rightTo*4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
+						else if(z==rightTo*4 && successline.length == 5 && (successline[0] % col >4)) {success(successline);
 							win(successline,type);
-						 break;}else if(z==rightTo*4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
+						 break;}else if(z==rightTo*4 && successline.length == 5 && (successline[0] % col <=4)){
 							successline.length = 0;
 							continue;
 						}
@@ -196,9 +196,9 @@
 							successline.push(dataid+z);
 						}
 						if(z==leftTo*4 && successline.length < 5){successline.length =0;} 
-						else if(z==leftTo*4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
+						else if(z==leftTo*4 && successline.length == 5 && (col- successline[0] % col >3 )) {success(successline);
 							win(successline,type);
-						 break;}else if(z==leftTo*4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
+						 break;}else if(z==leftTo*4 && successline.length == 5 && (col- successline[0] % col <=3 )){
 							successline.length = 0;
 							continue;
 						}
