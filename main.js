@@ -26,7 +26,7 @@
 		if(id_match !=null){
 			$.ajax({
 			    	method: 'get',
-			    	url: 'http://vucms.systems/caroweb/whoplay.php?id_match='+id_match,
+			    	url: './whoplay.php?id_match='+id_match,
 			    	success: function(data){
 			    		data = JSON.parse(data);
 			    		 type = data.mytype;if(type=='x' && data.status=='success'){$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');mytime =true;}  else mytime =false;
@@ -41,7 +41,7 @@
 		}else{
 			$.ajax({
 			    	method: 'get',
-			    	url: 'http://vucms.systems/caroweb/whoplay.php',
+			    	url: './whoplay.php',
 			    	success: function(data){
 			    		data = JSON.parse(data);
 			    		 type = data.mytype;if(type=='x' && data.status=='success'){$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');mytime =true;}  else mytime =false;
