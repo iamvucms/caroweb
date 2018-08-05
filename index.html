@@ -102,7 +102,7 @@
 	}
 	conn.onmessage = function(e){
 		e = JSON.parse(e.data);
-		if(id_match==e.id_match && e.yourtype != type){
+		if(id_match==e.id_match && e.yourtype != type && !e.action){
 		id = e.areaId;
 		yourtype = e.yourtype;
 		if(yourtype=='x' && $('td[data-id="'+id+'"]').html()=='' ){$('td[data-id="'+id+'"]').html('X');
@@ -112,7 +112,21 @@
 		$('#mytime').html('<p style="color:green">Lượt chơi: Đến lượt bạn !</p>');
 		mytime = true;
 
-	}
+		}else if(e.action =='win'  && e.idlist){
+			console.log('Bạn đã thua');
+			dataWin = e.idlist;
+			var colorline =1; 
+			setInterval(function(){
+				if(colorline % 2 ==1) colornum = 'red'; else colornum = 'black';
+				colorline++;
+				for(i=0;i<dataWin.length;i++){
+				$('td[data-id="'+dataWin[i]+'"]').css('color',colornum);
+				}
+			},400);
+			mytime = false;
+			$('#mytime').html('<p style="color:red">Bạn đã thua !</p>');
+			
+		}
 	} 
 	$('td').click(function(){
 		if($('td[data-id="'+$(this).data('id')+'"]').html()=='X' || $('td[data-id="'+$(this).data('id')+'"]').html()=='O' ) return false;
@@ -143,9 +157,52 @@
 							successline.push(dataid+z);
 						}
 						if(z==4 && successline.length < 5){successline.length =0;} 
-						else if(z==4 && successline.length == 5) {check2(successline);}
+						else if(z==4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
+							win(successline,type);
+						 break;}else if(z==4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
+							successline.length = 0;
+							continue;
+						}
 					}
 
+					for(var z=0;z<=col*4;z+=col){
+						if($.inArray(dataid+z,id) >=0){
+							//console.log(dataid+z);
+							successline.push(dataid+z);
+						}
+						if(z==col*4 && successline.length < 5){successline.length =0;} 
+						else if(z==col*4 && successline.length == 5) {
+							success(successline);
+							win(successline,type);
+						 	break;
+						}
+					}
+					for(var z=0;z<=rightTo*4;z+=rightTo){
+						if($.inArray(dataid+z,id) >=0){
+							//console.log(dataid+z);
+							successline.push(dataid+z);
+						}
+						if(z==rightTo*4 && successline.length < 5){successline.length =0;} 
+						else if(z==rightTo*4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
+							win(successline,type);
+						 break;}else if(z==rightTo*4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
+							successline.length = 0;
+							continue;
+						}
+					}
+					for(var z=0;z<=leftTo*4;z+=leftTo){
+						if($.inArray(dataid+z,id) >=0){
+							//console.log(dataid+z);
+							successline.push(dataid+z);
+						}
+						if(z==leftTo*4 && successline.length < 5){successline.length =0;} 
+						else if(z==leftTo*4 && successline.length == 5 && (successline[0] ==1 ||  successline[4] ==col*row || successline[4] % col >= 5 || successline[4] % col ==0)) {success(successline);
+							win(successline,type);
+						 break;}else if(z==leftTo*4 && successline.length == 5 && (successline[0] !=1 &&  successline[4] !=col*row && successline[4] % col < 5 && successline[4] % col !=0)){
+							successline.length = 0;
+							continue;
+						}
+					}
 					//console.log(successline);
 
 				// 	if(successline.length < 5) {successline =[];
@@ -183,33 +240,34 @@
 		}
 		
 	});
-	function check2(arr) {
+	function success(arr) {
 		
 		var success ;
-		
+		console.log(arr);
 			
-			if( arr[0] ==1 ||  arr[4] ==col*row){
-				
-				success = true;
-			}else if(arr[4] % col >= 5){
-				success =true;
-				console.log(arr);
-			}else{
-				success = false;
-			} 
+			
 			// if(col - dataCheck % col >= 0 && col - dataCheck % col<=15){ //error logic
 			// 	success = false;
 				
 
 			// }
-			for(a=0;a<arr.length;a++){
-				if(success==true){
-					$('td[data-id="'+arr[a]+'"]').css("color","green");
-				}
+			var colorline =1; 
+			setInterval(function(){
+				if(colorline % 2 ==1) colornum_ = 'green'; else colornum_ = 'black';
+				for(a=0;a<arr.length;a++){
+
+					$('td[data-id="'+arr[a]+'"]').css("color",colornum_);
 			
-			}
+				}
+				colorline++;
+			},400);
+			$('#mytime').html('<p style="color:green;">Bạn đã chiến thắng !</p>');
+			
 		
 	}
+	function win(idlist,type){
+		conn.send(JSON.stringify({action:"win",type:type,idlist:idlist,id_match:id_match}));
+	} 
         </script>
 	
     </body>
