@@ -193,36 +193,11 @@
 			                    continue;
 			                }
 			            }
-			            //console.log(successline);
-			            // 	if(successline.length < 5) {successline =[];
-			            // 	for(z=col;z<col*5;z+=col){
-			            // 		if($.inArray(dataid+z,id) >=0){
-			            // 			console.log(dataid+z);
-			            // 			successline.push(dataid+z);
-			            // 		}
-			            // 	}
-			            // }
-			            // 	if(successline.length < 5){ successline =[];
-			            // 	for(z=rightTo;z<rightTo*5;z+=rightTo){
-			            // 		if($.inArray(dataid+z,id) >=0){
-			            // 			successline.push(dataid+z);
-			            // 		}
-			            // 	}}
-			            // 	if(successline.length < 5){successline =[];
-			            // 	for(z=leftTo;z<leftTo*5;z+=leftTo){
-			            // 		if($.inArray(dataid+z,id) >=0){
-			            // 			successline.push(dataid+z);
-			            // 		}
-			            // 	}} 
-			            // 	if(successline.length < 5) successline =[];
 			        };
 			    }
 			});
 
 			function success(arr) {
-			    // if(col - dataCheck % col >= 0 && col - dataCheck % col<=15){ //error logic
-			    // 	success = false;
-			    // }
 			    var colorline_ = 1;
 			    clearx = setInterval(function() {
 			        if (colorline_ % 2 == 1) colornum_ = '#4285f4';
