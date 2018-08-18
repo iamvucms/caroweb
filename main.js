@@ -21,7 +21,7 @@
 			conn.onopen = function(e) {
 			    console.log("Kết nối server thành công!");
 			    conn.send(JSON.stringify({
-			        guid: "3d754fb2-2c80-4a57-b0d5-ee044524cec5"
+			        guid: "YOUR_WSNINJA_KEY"
 			    }));
 			    var checkstt = setInterval(function() {
 			        if (id_match != null) {
