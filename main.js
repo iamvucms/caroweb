@@ -27,7 +27,7 @@
 			        if (id_match != null) {
 			            $.ajax({
 			                method: 'get',
-			                url: './whoplay.php?id_match=' + id_match,
+			                url: 'https://abcs101.000webhostapp.com/whoplay.php?id_match=' + id_match,
 			                success: function(data) {
 			                    data = JSON.parse(data);
 			                    type = data.mytype;
@@ -48,7 +48,7 @@
 			        } else {
 			            $.ajax({
 			                method: 'get',
-			                url: './whoplay.php',
+			                url: 'https://abcs101.000webhostapp.com/whoplay.php',
 			                success: function(data) {
 			                    data = JSON.parse(data);
 			                    type = data.mytype;
